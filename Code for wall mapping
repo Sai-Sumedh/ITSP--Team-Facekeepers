@@ -121,6 +121,7 @@ void setup() {
     
     i=i_init;
     j=j_init;
+    room[i_init][j_init]="nc";
 }
 
 void loop() {
@@ -137,7 +138,7 @@ void loop() {
   // Other code that *DOESN'T* analyze ping results can go here.
   decide();
   action(case_no(c));
-  
+  if( state =="bc" && i==i_init+1 && j==j_init) break;
 }
 
 void echoCheck() { // If ping received, set the sensor distance to array.
