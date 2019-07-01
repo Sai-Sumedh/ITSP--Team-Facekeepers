@@ -70,7 +70,7 @@ else  {i--;room[i][j-1]="w";}  //state was bc
   else{                                   //x== backward
     motorL.run(BACKWARD);
     motorR.run(BACKWARD);
-    delay(time_onestep);    //till the bot comes completely out ,and can take a right turn and proceed forward                                
+    delay(time_onestep);    //till the bot comes back one step                               
 
      if(state == "fr"){
   	  room[i+1][j]="w";j--;}
@@ -125,6 +125,7 @@ void setup() {
 }
 
 void loop() {
+while(!( state =="bc" && i==i_init+1 && j==j_init)){
   for (uint8_t i = 0; i < SONAR_NUM; i++) { // Loop through all the sensors.
     if (millis() >= pingTimer[i]) {         // Is it this sensor's time to ping?
       pingTimer[i] += PING_INTERVAL * SONAR_NUM;  // Set next time this sensor will be pinged.
@@ -135,10 +136,10 @@ void loop() {
       sonar[currentSensor].ping_timer(echoCheck); // Do the ping (processing continues, interrupt will call echoCheck to look for echo).
     }
   }
-  // Other code that *DOESN'T* analyze ping results can go here.
+  // Other code that *DOESN'T* analyze ping results 
   decide();
   action(case_no(c));
-  if( state =="bc" && i==i_init+1 && j==j_init) break;
+   }
 }
 
 void echoCheck() { // If ping received, set the sensor distance to array.
@@ -165,7 +166,7 @@ void decide() {
   if (L==1 && R==1 && F==1) c[3]=1;// 3 obstacle c-need to go back.
 }
 
-int case_no(std:: vector<bool> &c){
+int case_no(bool c[]){
   for(int i=0;i<4;i++){
     if(c[i]==1) {
       return i;
@@ -185,7 +186,7 @@ void action(int case_number){
     straight(forward);
     
   }
-  else if(case_number==2){. // current location is room[i][j]
+  else if(case_number==2){ // current location is room[i][j]
     stop();
      if(state == "fr"){
   	  room[i-1][j]="w";j++;}
@@ -195,7 +196,6 @@ else if(state == "fc"){
       room[i][j+1]="w";i++;}
 else  {room[i][j-1]="w";i--;}  //state was bc
   room[i][j]="w";
-  }
     turn(right);
     
   }
@@ -205,15 +205,15 @@ else  {room[i][j-1]="w";i--;}  //state was bc
   	  room[i-1][j]="w";room[i][j+1]="w";}
 else if(state == "br"){
 	    room[i+1][j]="w";room[i][j-1]="w";}
-;}
+
 else if(state == "fc"){
       room[i][j+1]="w";room[i+1][j]="w";}
-;}
+
 else  {room[i][j-1]="w";room[i-1][j]="w";}  //state was bc
   
     
     straight(backward);
-    //
+    
   }
 }
 
