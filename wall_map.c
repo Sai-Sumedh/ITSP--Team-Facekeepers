@@ -13,7 +13,7 @@ AF_DCMotor motorR(4);
 const bool turn_right = false, turn_left = true, move_backward = false, move_forward = true;
 const int inc_col_index = 1, dec_col_index = -1, inc_row_index = 2, dec_row_index = -2;
 const int tile_clean = 10, tile_not_clean = -10, wall = 11, obstacle = 15;
-const int row_index_init = 0, col_index_init = 0;
+const int row_index_init = 1, col_index_init = 1;
 const int t_for_90 = 2000; //consider battery voltage change
 const int time_onestep = 100; //set correct val
 
