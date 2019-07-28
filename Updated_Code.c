@@ -45,15 +45,22 @@ void update(int &state,bool direction){   //used to update the orientation of th
 
 void turn(bool direction){
   if(direction == right){
-    motorL.run(FORWARD);
-    motorR.run(FORWARD);
-    delay(t_for_90);
+    digitalWrite(in1L,HIGH);
+  digitalWrite(in2L,LOW);
+
+  digitalWrite(in2R,HIGH);
+  digitalWrite(in1R,LOW);
+  delay(1000);
     update(state,right);
     
   }
   else{                                   //direction== left
-     motorL.run(BACKWARD);
-     motorR.run(FORWARD);delay(t_for_90);
+    digitalWrite(in2L,HIGH);
+  digitalWrite(in1L,LOW);
+
+  digitalWrite(in1R,HIGH);
+  digitalWrite(in2R,LOW);
+  delay(1000);
      update(state,left);
   }
 }
