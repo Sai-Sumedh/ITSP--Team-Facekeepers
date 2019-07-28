@@ -8,18 +8,18 @@ AF_DCMotor motorL(1);
 AF_DCMotor motorR(4);
 
 bool right=0,left=1;
-int t_for_90=2000 ;    //rough estimate by calculation-assuming wheel speed as 900*(200/255)rpm,wheel radius-5cm,
+int t_for_90=1000 ;    //rough estimate by calculation-assuming wheel speed as 900*(200/255)rpm,wheel radius-5cm,
         //so speed=0.05*900*(40/51)*2(pi)/60, which is approx.4m/s.
         //So,omega about center(while rotating) is 4/(0.15),
         //thus t=(theta)/(omega)=(pi)/(2*25) which is approx. 0.06s--60ms.
-        //Actual value needs to be set after experiment:after experiment-2000ms
+        //Actual value needs to be set after experiment:after experiment-1000ms
 bool forward=1,backward=0;
 int i,j,time_onestep;   //time_onestep is time taken by the bot to complete one step-i.e. move from one coordinate(cell) to another(needs to be set after experiment)
 int i_init=0,j_init=500;  //initial position of the bot-to account for any protrusions towards the left side.
 int state,fr=1,br=-1,fc=2,bc=-2;
 int c=10,nc=-10,w=11,ob=15;           
 
-std::vector< std::vector<int> > room(1000,std::vector<int>(1000,nc)) ;  //room is divided into cells(40cm*40cm-about the bot's dimensions-to assign a unique position to the bot)-each cell represented by a coordinate
+std::vector< std::vector<int> > room(1000,std::vector<int>(1000,nc)) ;  //room is divided into cells(30cm*30cm-about the bot's dimensions-to assign a unique position to the bot)-each cell represented by a coordinate
                                                                           //maximum area cleanable is 10^6 *0.16= 1.6 lakh m^2(actually depends on battery durability)
 
 void update(int &state,bool direction){   //used to update the orientation of the bot ONLY
@@ -59,24 +59,47 @@ void turn(bool direction){
 }
 void straight(bool x){
   if( x == forward ){
-    motorL.run(FORWARD);
-    motorR.run(FORWARD);delay(time_onestep);
+     digitalWrite(in1L,HIGH);
+  digitalWrite(in2L,LOW);
+
+  digitalWrite(in1R,HIGH);
+  digitalWrite(in2R,LOW);
+  delay(700);
+
+
+      digitalWrite(in2L,HIGH);
+  digitalWrite(in1L,LOW);
+
+  digitalWrite(in2R,HIGH);
+  digitalWrite(in1R,LOW);
+  delay(80);
   
      if(state == fr){
-      j++;room[i-1][j]=w;}
+      room[i-1][j]=w;j++;}
      else if(state == br){
-      j--;room[i+1][j]=w;}
+     room[i+1][j]=w; j--;}
      else if(state == fc){
-      i++;room[i][j+1]=w;}
-     else  {i--;room[i][j-1]=w;}  //state was bc
+      room[i][j+1]=w;i++;}
+     else  {room[i][j-1]=w;i--;}  //state was bc
   room[i][j]=c;
   
   }
   else{                                   //x== backward
-    motorL.run(BACKWARD);
-    motorR.run(BACKWARD);
-    delay(time_onestep);   //till the bot comes back one step                               
+                                 
+digitalWrite(in2L,HIGH);
+  digitalWrite(in1L,LOW);
 
+  digitalWrite(in2R,HIGH);
+  digitalWrite(in1R,LOW);
+  delay(700);
+
+
+      digitalWrite(in1L,HIGH);
+  digitalWrite(in2L,LOW);
+
+  digitalWrite(in1R,HIGH);
+  digitalWrite(in2R,LOW);
+  delay(80);
      if(state == fr){
       room[i+1][j]=w;j--;}
      else if(state == br){
@@ -99,12 +122,12 @@ void stop(){
 #define MAX_DISTANCE 200 // Maximum distance (in cm) to ping.
 
 NewPing sonar[SONAR_NUM] = {   // Sensor object array.
-  NewPing(2, 2, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping. 
-  NewPing(3, 3, MAX_DISTANCE), 
-  NewPing(9, 9, MAX_DISTANCE),
-  NewPing(5, 5, MAX_DISTANCE),
-  NewPing(0, 0, MAX_DISTANCE),
-  NewPing(10, 10, MAX_DISTANCE)
+  NewPing(0, 0, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping. 
+  NewPing(1, 1, MAX_DISTANCE), 
+  NewPing(2, 2, MAX_DISTANCE),
+  NewPing(3, 3, MAX_DISTANCE),
+  NewPing(4, 4, MAX_DISTANCE),
+  NewPing(5, 5, MAX_DISTANCE)
 };
 
 unsigned int cm[SONAR_NUM];
@@ -120,8 +143,8 @@ void setup() {
   
   Serial.begin(9600);
     
-    i=i_init;
-    j=j_init;
+    i=0;
+    j=0;
                                                       //wall mapping
    while(!( state ==bc && i==i_init+1 && j==j_init)){
  for (uint8_t i = 0; i < SONAR_NUM; i++) { // Loop through each sensor and display results.
